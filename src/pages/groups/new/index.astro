@@ -1,0 +1,11 @@
+---
+// Request a new group, or edit one's page with ?edit=slug.
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import OrgsNav from '../../../components/OrgsNav.astro';
+import GroupForm from '../../../components/GroupForm.tsx';
+---
+
+<StarlightPage frontmatter={{ title: 'Request a Group', description: 'Request a new Organization, Corporation or Hero Agency.', template: 'splash', tableOfContents: false }}>
+	<OrgsNav current="groups" />
+	<GroupForm client:only="preact" />
+</StarlightPage>

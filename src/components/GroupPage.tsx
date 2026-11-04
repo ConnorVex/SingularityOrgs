@@ -1,8 +1,27 @@
 // One group's page (?g=slug): profile, members by rank, wallet, shops and, for Hero Agencies,
 // their hero duties. The page takes on the group's colour.
 import { useEffect, useState } from 'preact/hooks';
-import { groupsHref, kindLabel, loadGroup, messageOf, money, plural, shopHref, STATUS_TEXT, type Group, type Member } from '../lib/orgs.ts';
-import { siteConfigured } from '../lib/supabase.ts';
+import {
+	demoMode,
+	groupsHref,
+	kindLabel,
+	loadGroup,
+	loadMine,
+	loadTiers,
+	messageOf,
+	money,
+	plural,
+	removeMember,
+	shopHref,
+	STATUS_TEXT,
+	withdrawDuty,
+	type Group,
+	type Member,
+	type Mine,
+	type Tier,
+} from '../lib/orgs.ts';
+import { logIn, siteConfigured, watchPlayer, type Player } from '../lib/supabase.ts';
+import { DutyPanel, JoinPanel, ManagePanel, useAction } from './GroupActions.tsx';
 
 const slugFromUrl = () => new URLSearchParams(location.search).get('g') ?? '';
 const date = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) : '');
@@ -25,7 +44,8 @@ function Section(props: { id: string; title: string; aside?: string; children: p
 	);
 }
 
-function Members({ g }: { g: Group }) {
+function Members({ g, reload }: { g: Group; reload: () => Promise<void> }) {
+	const { busy, error, run } = useAction(reload);
 	const byRank = g.ranks.map((r) => ({ rank: r, members: g.members.filter((m) => m.rank === r.id) })).filter((x) => x.members.length > 0);
 	return (
 		<Section id="members" title="Members" aside={plural(g.members.length, 'member')}>
@@ -43,16 +63,23 @@ function Members({ g }: { g: Group }) {
 									<strong>{m.name}</strong>
 									<span>{m.player}</span>
 								</span>
+								{m.mine && !rank.leader && (
+									<button type="button" class="gp-mini" disabled={busy === m.id} onClick={() => run(m.id, () => removeMember(m.id), `Take ${m.name} out of ${g.name}?`)}>
+										Leave
+									</button>
+								)}
 							</li>
 						))}
 					</ul>
 				</div>
 			))}
+			{error && <p class="portal-error">{error}</p>}
 		</Section>
 	);
 }
 
-function Duties({ g }: { g: Group }) {
+function Duties({ g, reload }: { g: Group; reload: () => Promise<void> }) {
+	const { busy, error, run } = useAction(reload);
 	const duties = g.duties ?? [];
 	return (
 		<Section id="duties" title="Hero duties" aside={`${plural(g.points ?? 0, 'point')} in the last 30 days`}>
@@ -72,10 +99,16 @@ function Duties({ g }: { g: Group }) {
 								</span>
 							</span>
 							{d.status !== 'approved' && <span class={`gp-chip ${d.status === 'denied' ? 'bad' : 'warn'}`}>{d.status === 'denied' ? 'Denied' : 'Waiting'}</span>}
+							{d.mine && d.status === 'pending' && (
+								<button type="button" class="gp-mini" disabled={busy === d.id} onClick={() => run(d.id, () => withdrawDuty(d.id), 'Withdraw this duty?')}>
+									Withdraw
+								</button>
+							)}
 						</li>
 					))}
 				</ul>
 			)}
+			{error && <p class="portal-error">{error}</p>}
 		</Section>
 	);
 }
@@ -128,12 +161,26 @@ function Shops({ g }: { g: Group }) {
 export default function GroupPage() {
 	const [group, setGroup] = useState<Group | null | undefined>(undefined);
 	const [error, setError] = useState(siteConfigured ? '' : 'The site is not connected to its database yet.');
+	const [player, setPlayer] = useState<Player | null | undefined>(undefined);
+	const [mine, setMine] = useState<Mine | null>(null);
+	const [tiers, setTiers] = useState<Tier[]>([]);
+	// Sample data on the dev server acts as if logged in.
+	const demo = demoMode();
 
-	useEffect(() => {
+	const reload = async () => {
 		const slug = slugFromUrl();
-		if (!slug) return setGroup(null);
-		if (siteConfigured) loadGroup(slug).then(setGroup, (e) => setError(messageOf(e)));
-	}, []);
+		setGroup(slug ? await loadGroup(slug) : null);
+	};
+	useEffect(() => (siteConfigured ? watchPlayer((p) => setPlayer(p)) : setPlayer(null)), []);
+	// Load once the login is known, since what the page shows depends on who's looking.
+	useEffect(() => {
+		if (player === undefined) return;
+		reload().catch((e) => setError(messageOf(e)));
+		if (player || demo) loadMine().then(setMine, () => setMine(null));
+	}, [player?.id ?? null, player === undefined]);
+	useEffect(() => {
+		if (group?.kind === 'agency' && (player || demo) && !tiers.length) loadTiers().then(setTiers, () => {});
+	}, [group?.kind, player?.id]);
 	useEffect(() => {
 		if (group) document.title = `${group.name} | Singularity Orgs`;
 	}, [group?.name]);
@@ -231,8 +278,18 @@ export default function GroupPage() {
 				</Section>
 			)}
 
-			<Members g={g} />
-			{g.kind === 'agency' && <Duties g={g} />}
+			<ManagePanel g={g} reload={reload} />
+			{mine && <JoinPanel g={g} mine={mine} reload={reload} />}
+			{player === null && !demo && g.status === 'approved' && g.recruiting && (
+				<p class="gp-row">
+					<button type="button" class="portal-button discord" onClick={() => logIn().catch((e) => setError(messageOf(e)))}>
+						Log in with Discord to join
+					</button>
+				</p>
+			)}
+			<Members g={g} reload={reload} />
+			{tiers.length > 0 && <DutyPanel g={g} tiers={tiers} reload={reload} />}
+			{g.kind === 'agency' && <Duties g={g} reload={reload} />}
 			{g.wallet && <Wallet g={g} />}
 			{g.shops.length > 0 && <Shops g={g} />}
 		</div>

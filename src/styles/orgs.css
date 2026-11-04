@@ -1128,3 +1128,202 @@
 		aspect-ratio: 16 / 4;
 	}
 }
+
+/* ── Player actions (GroupForm.tsx, GroupActions.tsx, MyGroups.tsx) ── */
+.gp-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.6rem;
+	margin: 0.75rem 0 0;
+}
+.gp-row > * {
+	margin: 0;
+}
+.gp-row > span:first-child {
+	flex: 1;
+}
+.gp-grow {
+	flex: 1 1 12rem;
+}
+.gp-actions {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	gap: 0.6rem;
+	margin-top: 1rem;
+}
+.gp-actions > * {
+	margin: 0;
+}
+.gp-form .pf-section {
+	margin-block: 0.5rem;
+}
+.gp-kinds {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+	gap: 0.75rem;
+	margin: 1rem 0 0;
+	padding: 0;
+	border: 0;
+}
+.gp-kind {
+	display: flex;
+	flex-direction: column;
+	gap: 0.3rem;
+	padding: 0.9rem 1rem;
+	border: 1px solid var(--pf-line);
+	border-radius: 0.75rem;
+	background: var(--pf-bg);
+	cursor: pointer;
+	font-size: var(--sl-text-sm);
+	color: var(--pf-muted);
+}
+.gp-kind > * {
+	margin: 0;
+}
+.gp-kind strong {
+	color: var(--pf-text);
+}
+.gp-kind input {
+	position: absolute;
+	opacity: 0;
+	pointer-events: none;
+}
+.gp-kind.active {
+	border-color: var(--pf-accent);
+	box-shadow: 0 0 0 3px var(--pf-glow);
+}
+.gp-kind:focus-within {
+	outline: 2px solid var(--pf-accent);
+	outline-offset: 2px;
+}
+.gp-colour {
+	display: flex;
+	gap: 0.5rem;
+}
+.gp-colour input[type='color'] {
+	flex: none;
+	width: 3rem;
+	padding: 0.2rem;
+	cursor: pointer;
+}
+.gp-problems {
+	margin: 0.5rem 0 0;
+	padding-inline-start: 2rem;
+}
+.gp-bad {
+	color: var(--sl-color-red-high);
+}
+.gp-ok {
+	margin: 0.75rem 0 0;
+	color: var(--sl-color-green-high);
+	font-size: var(--sl-text-sm);
+}
+.gp-sub {
+	margin-top: 1.5rem;
+}
+.gp-sub .pf-help {
+	margin: -0.3rem 0 0.5rem;
+}
+.gp-mini {
+	margin: 0 0 0 auto;
+	padding: 0.2rem 0.6rem;
+	border: 1px solid var(--pf-line);
+	border-radius: 999px;
+	background: transparent;
+	color: var(--pf-muted);
+	font: inherit;
+	font-size: var(--sl-text-xs);
+	cursor: pointer;
+}
+.gp-mini:hover:not(:disabled) {
+	border-color: var(--pf-accent);
+	color: var(--pf-text);
+}
+.gp-member-rank {
+	flex: 0 1 11rem;
+}
+.gp-member-rank select {
+	padding-block: 0.4rem;
+}
+.gp-rank-buttons {
+	display: flex;
+	gap: 0.4rem;
+	flex: none;
+}
+.gp-rank-buttons > * {
+	margin: 0;
+}
+.gp-ranks {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.gp-ranks li {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.6rem;
+	margin: 0;
+	padding: 0.6rem 0;
+	border-bottom: 1px solid var(--pf-line);
+}
+.gp-ranks input:not([type='checkbox']),
+.gp-row .pf-field input,
+.gp-row .pf-field select {
+	font: inherit;
+	font-size: var(--sl-text-sm);
+	color: var(--pf-text);
+	background: var(--pf-field);
+	border: 1px solid var(--pf-line);
+	border-radius: 0.55rem;
+	padding: 0.45rem 0.6rem;
+}
+.gp-rank-sort {
+	width: 3.5rem;
+}
+.gp-rank-name {
+	flex: 1 1 10rem;
+	min-width: 0;
+}
+.gp-powers {
+	display: flex;
+	flex-wrap: wrap;
+}
+.og-mine {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+.og-mine > *,
+.og-mine .portal-card {
+	margin: 0;
+}
+.og-mine .gp-rank-title {
+	margin-bottom: 0;
+}
+/* Starlight's article spacing pushes neighbouring inline pieces down. */
+.gp-powers > *,
+.gp-ranks li > *,
+.gp-list li > * {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+/* Rows with controls wrap on phones: name first, controls on the next line. */
+.gp-list li {
+	flex-wrap: wrap;
+}
+.gp-list-main {
+	flex: 1 1 10rem;
+}
+.gp-member-rank {
+	flex: 1 1 8rem;
+}
+.pf-button {
+	white-space: nowrap;
+}
+.pf-field :is(input, select, textarea):disabled {
+	opacity: 0.55;
+	cursor: not-allowed;
+}

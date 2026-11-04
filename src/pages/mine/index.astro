@@ -1,10 +1,11 @@
 ---
-// Placeholder until this page is built.
+// My Groups: your characters' groups, join requests and the groups you requested.
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import OrgsNav from '../../components/OrgsNav.astro';
+import MyGroups from '../../components/MyGroups.tsx';
 ---
 
 <StarlightPage frontmatter={{ title: 'My Groups', template: 'splash', tableOfContents: false }}>
 	<OrgsNav current="mine" />
-	<p class="portal-status">Coming soon.</p>
+	<MyGroups client:only="preact" />
 </StarlightPage>

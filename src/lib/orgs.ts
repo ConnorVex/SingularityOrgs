@@ -130,6 +130,8 @@ const query = (params: Record<string, string>) => {
 
 export const groupsHref = (kind?: Kind) => `${root}groups/${query(kind ? { type: kind } : {})}`;
 export const groupHref = (slug: string) => `${root}groups/view/${query({ g: slug })}`;
+export const newGroupHref = (edit?: string) => `${root}groups/new/${query(edit ? { edit } : {})}`;
+export const mineHref = () => `${root}mine/${query({})}`;
 export const shopHref = (id: string) => `${ECONOMY}#/shops/${id}`;
 
 function client() {
@@ -153,6 +155,91 @@ export async function loadGroup(slug: string): Promise<Group | null> {
 	if (import.meta.env.DEV && demoMode()) return (await import('./demo.ts')).demoGroup(slug);
 	return call<Group | null>('orgs_group', { p_slug: slug });
 }
+
+export interface Mine {
+	characters: { id: string; name: string }[];
+	memberships: {
+		id: string;
+		status: 'requested' | 'active';
+		character: string;
+		character_id: string;
+		group: string;
+		slug: string;
+		kind: Kind;
+		logo: string | null;
+		rank: string;
+		leader: boolean;
+	}[];
+	requested: { id: string; name: string; slug: string; kind: Kind; status: GroupStatus; review_note: string }[];
+}
+
+export interface Tier {
+	id: string;
+	name: string;
+	points: number;
+	description: string;
+	sort: number;
+	retired: boolean;
+}
+
+/** Profile fields a player sets when requesting or editing a group. */
+export interface GroupFields {
+	name: string;
+	tagline: string;
+	about: string;
+	logo_url: string;
+	banner_url: string;
+	colour: string;
+	headquarters: string;
+	discord_url: string;
+	recruiting: boolean;
+}
+
+export async function loadMine(): Promise<Mine> {
+	if (import.meta.env.DEV && demoMode()) return (await import('./demo.ts')).DEMO_MINE;
+	return call<Mine>('orgs_mine');
+}
+
+export async function loadTiers(): Promise<Tier[]> {
+	if (import.meta.env.DEV && demoMode()) return (await import('./demo.ts')).DEMO_TIERS;
+	return call<Tier[]>('orgs_tiers');
+}
+
+// Actions. On the dev server's sample data they do nothing, so buttons can be clicked safely.
+async function act<T>(fn: string, args: Record<string, unknown>): Promise<T> {
+	if (import.meta.env.DEV && demoMode()) {
+		console.info('[demo] skipped', fn, args);
+		return null as T;
+	}
+	return call<T>(fn, args);
+}
+
+export const requestGroup = (kind: Kind, leader: string, fields: GroupFields) =>
+	act<string>('orgs_request', { p_kind: kind, p_leader: leader, p_fields: fields });
+export const updateGroup = (group: string, fields: Partial<GroupFields>) => act<void>('orgs_update', { p_group: group, p_fields: fields });
+export const resubmitGroup = (group: string) => act<void>('orgs_resubmit', { p_group: group });
+export const deleteGroup = (group: string) => act<void>('orgs_delete', { p_group: group });
+export const askToJoin = (group: string, character: string, message: string) =>
+	act<string>('orgs_ask_join', { p_group: group, p_character: character, p_message: message });
+export const respondJoin = (member: string, accept: boolean, rank: string | null = null) =>
+	act<void>('orgs_respond_join', { p_member: member, p_accept: accept, p_rank: rank });
+export const setRank = (member: string, rank: string) => act<void>('orgs_set_rank', { p_member: member, p_rank: rank });
+export const removeMember = (member: string) => act<void>('orgs_remove_member', { p_member: member });
+export const transferLeader = (group: string, member: string) => act<void>('orgs_transfer_leader', { p_group: group, p_member: member });
+export const saveRank = (group: string, rank: Partial<Rank> & { title: string; sort: number }) =>
+	act<string>('orgs_save_rank', {
+		p_group: group,
+		p_rank: rank.id ?? null,
+		p_title: rank.title,
+		p_sort: rank.sort,
+		p_manage: rank.manage ?? false,
+		p_spend: rank.spend ?? false,
+		p_edit: rank.edit ?? false,
+	});
+export const deleteRank = (rank: string) => act<void>('orgs_delete_rank', { p_rank: rank });
+export const logDuty = (group: string, character: string, tier: string, summary: string, details: string, link: string) =>
+	act<string>('orgs_log_duty', { p_group: group, p_character: character, p_tier: tier, p_summary: summary, p_details: details, p_link: link });
+export const withdrawDuty = (duty: string) => act<void>('orgs_withdraw_duty', { p_duty: duty });
 
 export const money = (n: number, symbol = '¢') => `${symbol}${n.toLocaleString()}`;
 export const messageOf = (e: unknown) => (e && typeof e === 'object' && 'message' in e ? String(e.message) : String(e));

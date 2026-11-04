@@ -1,5 +1,5 @@
 // Sample groups for checking layouts on the dev server (?demo). Never used on the live site.
-import type { Group, GroupCard } from './orgs.ts';
+import type { Group, GroupCard, Mine, Tier } from './orgs.ts';
 
 const day = (n: number) => new Date(Date.now() - n * 86400000).toISOString();
 
@@ -32,7 +32,8 @@ export function demoGroup(slug: string): Group | null {
 		created_at: day(42),
 		review_note: null,
 		is_requester: false,
-		me: { leader: false, manage: false, spend: false, edit: false, member: false, admin: false },
+		// ?demo&as=leader (or member) shows the page as that member would see it.
+		me: demoMe(),
 		ranks: [
 			{ id: 'r0', title: agency ? 'Agency Head' : 'Leader', sort: 0, leader: true, manage: true, spend: true, edit: true },
 			{ id: 'r1', title: agency ? 'Sidekick Lead' : 'Officer', sort: 1, leader: false, manage: true, spend: true, edit: false },
@@ -42,9 +43,9 @@ export function demoGroup(slug: string): Group | null {
 			{ id: 'm1', character: 'c1', name: card.leader ?? 'Leader', image: null, player: 'Tatsuya', rank: 'r0', joined_at: day(40), mine: false },
 			{ id: 'm2', character: 'c2', name: 'Kenji Arata', image: null, player: 'Minako', rank: 'r1', joined_at: day(30), mine: false },
 			{ id: 'm3', character: 'c3', name: 'Mika "Flashpoint" Sato', image: null, player: 'Geeked', rank: 'r2', joined_at: day(12), mine: false },
-			{ id: 'm4', character: 'c4', name: 'Ren', image: null, player: 'Tamaki', rank: 'r2', joined_at: day(3), mine: false },
+			{ id: 'm4', character: 'c4', name: 'Ren', image: null, player: 'Tamaki', rank: 'r2', joined_at: day(3), mine: demoAs() === 'member' },
 		],
-		requests: [],
+		requests: demoAs() === 'leader' ? [{ id: 'q1', character: 'c9', name: 'Yuki Tanaka', image: null, player: 'Rae', message: 'I want to help the eastern ward.', created_at: day(1), mine: false }] : [],
 		wallet: {
 			account: 'a1',
 			balance: card.balance ?? 0,
@@ -66,3 +67,29 @@ export function demoGroup(slug: string): Group | null {
 			: null,
 	};
 }
+
+const demoAs = () => new URLSearchParams(location.search).get('as');
+function demoMe(): Group['me'] {
+	const as = demoAs();
+	const leader = as === 'leader';
+	return { leader, manage: leader, spend: leader, edit: leader, member: leader || as === 'member', admin: false };
+}
+
+export const DEMO_TIERS: Tier[] = [
+	{ id: 't1', name: 'Patrol', points: 1, description: 'A patrol, guard shift or minor incident.', sort: 1, retired: false },
+	{ id: 't2', name: 'Rescue', points: 3, description: 'Saving civilians from danger.', sort: 2, retired: false },
+	{ id: 't3', name: 'Villain Capture', points: 5, description: 'Stopping and apprehending a villain.', sort: 3, retired: false },
+	{ id: 't4', name: 'Disaster Response', points: 10, description: 'A major disaster or city-wide threat.', sort: 4, retired: false },
+];
+
+export const DEMO_MINE: Mine = {
+	characters: [
+		{ id: 'c4', name: 'Ren' },
+		{ id: 'c8', name: 'Ren (Alt)' },
+	],
+	memberships: [
+		{ id: 'm4', status: 'active', character: 'Ren', character_id: 'c4', group: 'Bright Star Agency', slug: 'bright-star-agency', kind: 'agency', logo: null, rank: 'Hero', leader: false },
+		{ id: 'm9', status: 'requested', character: 'Ren (Alt)', character_id: 'c8', group: 'Kurogane Industries', slug: 'kurogane-industries', kind: 'corporation', logo: null, rank: 'Employee', leader: false },
+	],
+	requested: [{ id: 'g9', name: 'Night Owls', slug: 'night-owls', kind: 'organization', status: 'needs_correction', review_note: 'Please add a short about section.' }],
+};

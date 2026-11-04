@@ -1,11 +1,12 @@
 // Singularity Orgs home: what kinds of group there are, the Hero Agency Ranking, and your groups.
 import type { ComponentChildren } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
+import { loadMine, messageOf, newGroupHref, type Mine } from '../lib/orgs.ts';
 import { logIn, loginErrorFromUrl, siteConfigured, watchPlayer, type Player } from '../lib/supabase.ts';
+import { MyGroupsList } from './MyGroups.tsx';
 
 const root = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 
-const messageOf = (e: unknown) => (e && typeof e === 'object' && 'message' in e ? String(e.message) : String(e));
 
 // Small line icons, drawn in the accent colour.
 const ICONS = {
@@ -67,6 +68,11 @@ export default function OrgsHome() {
 		return siteConfigured ? '' : 'The site is not connected to its database yet (PUBLIC_SUPABASE_URL / PUBLIC_SUPABASE_ANON_KEY are missing from this build).';
 	});
 
+	const [mine, setMine] = useState<Mine | null>(null);
+	useEffect(() => {
+		if (player) loadMine().then(setMine, (e) => setError(messageOf(e)));
+	}, [player?.id]);
+
 	useEffect(() => (siteConfigured ? watchPlayer((p, e) => (e ? setError(`Couldn't load your account: ${messageOf(e)}`) : setPlayer(p))) : undefined), []);
 
 	const errorBox = error ? <p class="portal-error">{error}</p> : null;
@@ -95,9 +101,12 @@ export default function OrgsHome() {
 			{player && (
 				<>
 					<h2 class="og-heading">My Groups</h2>
-					<section class="portal-card">
-						<p class="pf-empty">Your characters aren't in any groups yet. Open a group's page to ask to join, or request a new group.</p>
-					</section>
+					{mine ? <MyGroupsList mine={mine} compact /> : <p class="portal-status">Loading your groups…</p>}
+					<p class="gp-row">
+						<a class="pf-button primary" href={newGroupHref()}>
+							+ Request a group
+						</a>
+					</p>
 				</>
 			)}
 		</div>
