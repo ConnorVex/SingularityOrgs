@@ -1,0 +1,68 @@
+---
+// The Singularity Orgs top bar, shown at the top of every page.
+// Admin links stay hidden until the logged-in player turns out to be an admin.
+// Usage: <OrgsNav current="groups" />
+import { WIKI } from '../lib/links.ts';
+
+interface Props {
+	current?: 'home' | 'groups' | 'ranking' | 'mine' | 'review';
+}
+
+const { current } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const links = [
+	{ id: 'home', label: 'Home', href: `${base}` },
+	{ id: 'groups', label: 'Groups', href: `${base}groups/` },
+	{ id: 'ranking', label: 'Hero Ranking', href: `${base}ranking/` },
+	{ id: 'mine', label: 'My Groups', href: `${base}mine/` },
+	{ id: 'review', label: 'Review', href: `${base}admin/`, admin: true },
+	{ id: 'wiki', label: 'Rules ↗', href: WIKI },
+];
+---
+
+<nav class="og-nav not-content" aria-label="Singularity Orgs" data-og-nav>
+	<ul class="og-nav-links">
+		{
+			links.map((link) => (
+				<li hidden={link.admin} data-admin-link={link.admin ? '' : undefined}>
+					<a href={link.href} aria-current={link.id === current ? 'page' : undefined}>
+						{link.label}
+					</a>
+				</li>
+			))
+		}
+	</ul>
+	<p class="og-nav-player" data-player hidden>
+		<img alt="" data-avatar hidden />
+		<span data-name></span>
+	</p>
+</nav>
+
+<script>
+	import { siteConfigured, watchPlayer } from '../lib/supabase';
+
+	const nav = document.querySelector<HTMLElement>('[data-og-nav]');
+	// Keep the current tab in view on phones, where the links scroll sideways.
+	const showCurrent = () => {
+		const current = nav?.querySelector<HTMLElement>('[aria-current="page"]');
+		const list = current?.closest<HTMLElement>('.og-nav-links');
+		if (!current || !list || current.closest('li')!.hidden) return;
+		const a = current.getBoundingClientRect();
+		const b = list.getBoundingClientRect();
+		list.scrollLeft += a.left - b.left - (b.width - a.width) / 2;
+	};
+	showCurrent();
+	if (nav && siteConfigured) {
+		watchPlayer((player) => {
+			for (const el of nav.querySelectorAll<HTMLElement>('[data-admin-link]')) el.hidden = !player?.isAdmin;
+			const box = nav.querySelector<HTMLElement>('[data-player]')!;
+			box.hidden = !player;
+			if (!player) return;
+			nav.querySelector('[data-name]')!.textContent = player.displayName;
+			const avatar = nav.querySelector<HTMLImageElement>('[data-avatar]')!;
+			avatar.hidden = !player.avatarUrl;
+			if (player.avatarUrl) avatar.src = player.avatarUrl;
+			showCurrent();
+		});
+	}
+</script>

@@ -1,0 +1,18 @@
+---
+// Singularity Orgs home: the three kinds of group, the Hero Agency Ranking, and your groups.
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import OrgsNav from '../components/OrgsNav.astro';
+import OrgsHome from '../components/OrgsHome.tsx';
+---
+
+<StarlightPage
+	frontmatter={{
+		title: 'Singularity Orgs',
+		description: 'Organizations, Corporations and Hero Agencies of Singularity, and the Hero Agency Ranking.',
+		template: 'splash',
+		tableOfContents: false,
+	}}
+>
+	<OrgsNav current="home" />
+	<OrgsHome client:only="preact" />
+</StarlightPage>

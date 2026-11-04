@@ -1,0 +1,68 @@
+// Sample groups for checking layouts on the dev server (?demo). Never used on the live site.
+import type { Group, GroupCard } from './orgs.ts';
+
+const day = (n: number) => new Date(Date.now() - n * 86400000).toISOString();
+
+export const DEMO_CARDS: GroupCard[] = [
+	{ id: '1', slug: 'bright-star-agency', kind: 'agency', name: 'Bright Star Agency', tagline: 'Always there when the city calls. Rescue first, questions later.', logo: null, colour: '#f2b134', recruiting: true, headquarters: 'Musutafu, Japan', members: 6, leader: 'Akari Hoshino', balance: 48200, points: 37 },
+	{ id: '2', slug: 'aegis', kind: 'agency', name: 'Aegis', tagline: 'Shield of the eastern ward.', logo: null, colour: '#3b82f6', recruiting: false, headquarters: '', members: 3, leader: 'Rae', balance: 1200, points: 12 },
+	{ id: '3', slug: 'kurogane-industries', kind: 'corporation', name: 'Kurogane Industries', tagline: 'Support gear, cyberware and the finest steel money can buy.', logo: null, colour: '#9ca3af', recruiting: true, headquarters: 'Night City', members: 11, leader: 'Daichi Kurogane', balance: 912000, points: null },
+	{ id: '4', slug: 'the-crimson-hand', kind: 'organization', name: 'The Crimson Hand', tagline: 'An old order that keeps its secrets.', logo: null, colour: '#ef4444', recruiting: true, headquarters: 'Unknown', members: 4, leader: 'Vesper', balance: 0, points: null },
+];
+
+export function demoGroup(slug: string): Group | null {
+	const card = DEMO_CARDS.find((c) => c.slug === slug);
+	if (!card) return null;
+	const agency = card.kind === 'agency';
+	return {
+		id: card.id,
+		slug: card.slug,
+		kind: card.kind,
+		name: card.name,
+		status: 'approved',
+		tagline: card.tagline,
+		about: 'Founded after the Kamino incident, Bright Star took in heroes nobody else would sign.\n\nToday it runs patrols across three wards and keeps a rescue team on call around the clock.',
+		logo_url: '',
+		banner_url: '',
+		colour: card.colour,
+		headquarters: card.headquarters,
+		discord_url: 'https://discord.gg/example',
+		recruiting: card.recruiting,
+		approved_at: day(40),
+		created_at: day(42),
+		review_note: null,
+		is_requester: false,
+		me: { leader: false, manage: false, spend: false, edit: false, member: false, admin: false },
+		ranks: [
+			{ id: 'r0', title: agency ? 'Agency Head' : 'Leader', sort: 0, leader: true, manage: true, spend: true, edit: true },
+			{ id: 'r1', title: agency ? 'Sidekick Lead' : 'Officer', sort: 1, leader: false, manage: true, spend: true, edit: false },
+			{ id: 'r2', title: agency ? 'Hero' : 'Member', sort: 2, leader: false, manage: false, spend: false, edit: false },
+		],
+		members: [
+			{ id: 'm1', character: 'c1', name: card.leader ?? 'Leader', image: null, player: 'Tatsuya', rank: 'r0', joined_at: day(40), mine: false },
+			{ id: 'm2', character: 'c2', name: 'Kenji Arata', image: null, player: 'Minako', rank: 'r1', joined_at: day(30), mine: false },
+			{ id: 'm3', character: 'c3', name: 'Mika "Flashpoint" Sato', image: null, player: 'Geeked', rank: 'r2', joined_at: day(12), mine: false },
+			{ id: 'm4', character: 'c4', name: 'Ren', image: null, player: 'Tamaki', rank: 'r2', joined_at: day(3), mine: false },
+		],
+		requests: [],
+		wallet: {
+			account: 'a1',
+			balance: card.balance ?? 0,
+			symbol: '¢',
+			history: [
+				{ id: 't1', kind: 'pay', memo: 'Patrol bonus', at: day(1), amount: -500, other: 'Ren' },
+				{ id: 't2', kind: 'grant', memo: 'City contract', at: day(4), amount: 25000, other: null },
+				{ id: 't3', kind: 'purchase', memo: 'Grappling hooks x3', at: day(9), amount: 1800, other: 'Kenji Arata' },
+			],
+		},
+		shops: card.kind === 'corporation' ? [{ id: 's1', name: 'Kurogane Armory', description: 'Support gear.', image: null, status: 'open', items: 14 }] : [],
+		points: card.points,
+		duties: agency
+			? [
+					{ id: 'd1', character: 'Mika "Flashpoint" Sato', tier: 'Villain Capture', summary: 'Stopped the Hosu bank robbery', link: 'https://discord.com/channels/1/2/3', status: 'approved', points: 5, review_note: null, mine: false, at: day(2) },
+					{ id: 'd2', character: 'Ren', tier: 'Rescue', summary: 'Pulled three civilians out of a collapsed building', link: 'https://discord.com/channels/1/2/4', status: 'approved', points: 3, review_note: null, mine: false, at: day(6) },
+					{ id: 'd3', character: 'Kenji Arata', tier: 'Patrol', summary: 'Night patrol in the eastern ward', link: 'https://discord.com/channels/1/2/5', status: 'approved', points: 1, review_note: null, mine: false, at: day(8) },
+				]
+			: null,
+	};
+}

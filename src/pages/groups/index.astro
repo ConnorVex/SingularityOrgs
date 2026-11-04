@@ -1,0 +1,13 @@
+---
+// Groups directory: every approved Organization, Corporation and Hero Agency (?type= filters by kind).
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import OrgsNav from '../../components/OrgsNav.astro';
+import GroupDirectory from '../../components/GroupDirectory.tsx';
+---
+
+<StarlightPage
+	frontmatter={{ title: 'Groups', description: 'Organizations, Corporations and Hero Agencies of Singularity.', template: 'splash', tableOfContents: false }}
+>
+	<OrgsNav current="groups" />
+	<GroupDirectory client:only="preact" />
+</StarlightPage>

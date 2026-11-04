@@ -1,0 +1,11 @@
+---
+// One group's page (?g=slug): profile, members by rank, wallet, shops and hero duties.
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import OrgsNav from '../../../components/OrgsNav.astro';
+import GroupPage from '../../../components/GroupPage.tsx';
+---
+
+<StarlightPage frontmatter={{ title: 'Group', description: 'A group in Singularity.', template: 'splash', tableOfContents: false }}>
+	<OrgsNav current="groups" />
+	<GroupPage client:only="preact" />
+</StarlightPage>

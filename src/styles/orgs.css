@@ -1,0 +1,1130 @@
+/* Singularity Orgs: the same calm look as the Divine Database (its portal.css), with a green accent
+   to match this site's logo. Surfaces and text come from Starlight's colours, so light and dark mode
+   just work. */
+
+/* Green accent for Starlight itself (links, focus rings) and the og- pieces below. */
+:root {
+	--sl-color-accent-low: #0c2a17;
+	--sl-color-accent: #2fb45a;
+	--sl-color-accent-high: #b6f0c8;
+}
+:root[data-theme='light'] {
+	--sl-color-accent-low: #c9f2d5;
+	--sl-color-accent: #1d8a43;
+	--sl-color-accent-high: #0d3b1d;
+}
+
+/* Registered so the browser can animate them; plain custom properties would snap. */
+@property --pf-accent {
+	syntax: '<color>';
+	inherits: true;
+	initial-value: #2fb45a;
+}
+@property --pf-ink {
+	syntax: '<color>';
+	inherits: true;
+	initial-value: #000;
+}
+
+:root {
+	--pf-accent: var(--sl-color-accent);
+	--pf-ink: var(--sl-color-black);
+	--pf-common: #3ba55d;
+	--pf-uncommon: #f0932b;
+	--pf-rare: #3b82f6;
+	--pf-legendary: #eab308;
+	--pf-mythic: #ef4444;
+	--pf-radius: 1rem;
+	--pf-font: inherit;
+	--pf-mono: var(--sl-font-mono, ui-monospace, monospace);
+	--pf-bg: var(--sl-color-black);
+	--pf-panel: var(--sl-color-gray-6);
+	--pf-field: var(--sl-color-black);
+	--pf-line: var(--sl-color-gray-5);
+	--pf-line-strong: color-mix(in srgb, var(--pf-accent) 45%, var(--sl-color-gray-5));
+	--pf-text: var(--sl-color-white);
+	--pf-muted: var(--sl-color-gray-2);
+	--pf-faint: var(--sl-color-gray-3);
+	--pf-glow: color-mix(in srgb, var(--pf-accent) 14%, transparent);
+	transition:
+		--pf-accent 1s ease,
+		--pf-ink 1s ease;
+}
+
+/* Portal pages get a wider column, like a dashboard. */
+:root:has(.pf, .portal, .og-nav) {
+	--sl-content-width: 72rem;
+}
+
+/* ── Top bar on every page (OrgsNav.astro) ── */
+.og-nav {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	flex-wrap: wrap;
+	margin: 0 0 1.5rem;
+	padding: 0.4rem;
+	border: 1px solid var(--pf-line);
+	border-radius: 999px;
+	background: color-mix(in srgb, var(--pf-panel) 85%, transparent);
+	backdrop-filter: blur(6px);
+}
+.og-nav-links {
+	display: flex;
+	gap: 0.25rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	overflow-x: auto;
+	scrollbar-width: none;
+	flex: 1;
+	min-width: 0;
+}
+.og-nav-links li {
+	margin: 0;
+	flex: none;
+}
+.og-nav-links a {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	padding: 0.45rem 0.95rem;
+	border-radius: 999px;
+	font-size: var(--sl-text-sm);
+	font-weight: 600;
+	color: var(--pf-muted);
+	text-decoration: none;
+	transition:
+		background 0.2s,
+		color 0.2s;
+}
+.og-nav-links a:hover {
+	color: var(--pf-text);
+	background: var(--pf-bg);
+}
+.og-nav-links a[aria-current='page'] {
+	background: var(--pf-accent);
+	color: var(--pf-ink);
+}
+.og-nav-player {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin: 0;
+	padding-inline-end: 0.5rem;
+	font-size: var(--sl-text-sm);
+	color: var(--pf-muted);
+}
+.og-nav-player img {
+	width: 1.75rem;
+	height: 1.75rem;
+	margin: 0;
+	border-radius: 50%;
+}
+@media (max-width: 40rem) {
+	.og-nav {
+		border-radius: var(--pf-radius);
+	}
+	/* The links get the whole row; a fade on the right shows there's more to scroll to. */
+	.og-nav-player {
+		display: none;
+	}
+	.og-nav-links {
+		mask-image: linear-gradient(to right, #000 calc(100% - 2rem), transparent);
+		padding-inline-end: 1.5rem;
+	}
+	.og-nav-links a {
+		padding: 0.45rem 0.75rem;
+	}
+}
+
+/* ── Shared pieces ── */
+.portal,
+.pf {
+	color: var(--pf-text);
+}
+.portal-card,
+.pf-section {
+	position: relative;
+	border: 1px solid var(--pf-line);
+	border-radius: var(--pf-radius);
+	background: var(--pf-panel);
+	padding: 1.5rem;
+	margin-block: 1rem;
+}
+.portal-card > h2,
+.pf-section-head h2 {
+	color: var(--pf-text);
+}
+.portal-card > h2 {
+	font-size: var(--sl-text-h4);
+	margin: 0 0 1rem;
+	padding-bottom: 0.6rem;
+	border-bottom: 1px solid var(--pf-line);
+}
+.portal-status {
+	text-align: center;
+	color: var(--pf-muted);
+	font-size: var(--sl-text-sm);
+}
+.portal-error {
+	border: 1px solid var(--sl-color-red);
+	background: var(--sl-color-red-low);
+	color: var(--sl-color-red-high);
+	border-radius: 0.5rem;
+	padding: 0.75rem 1rem;
+}
+
+/* Buttons */
+.portal-button,
+.pf-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	border: 1px solid var(--pf-line-strong);
+	border-radius: 999px;
+	padding: 0.55rem 1.15rem;
+	font: inherit;
+	font-size: var(--sl-text-sm);
+	font-weight: 600;
+	background: transparent;
+	color: var(--pf-text);
+	cursor: pointer;
+	text-decoration: none;
+	transition:
+		background 0.2s,
+		border-color 0.2s,
+		box-shadow 0.2s;
+}
+.pf-button:hover:not(:disabled),
+.portal-button:hover:not(:disabled) {
+	border-color: var(--pf-accent);
+	background: var(--pf-glow);
+}
+.portal-button:disabled,
+.pf-button:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+.portal-button.discord {
+	background: #5865f2;
+	border-color: #5865f2;
+	color: #fff;
+}
+.pf-button.primary {
+	background: var(--pf-accent);
+	border-color: var(--pf-accent);
+	color: var(--pf-ink);
+}
+.pf-button.primary:hover:not(:disabled) {
+	background: color-mix(in srgb, var(--pf-accent) 85%, var(--sl-color-white));
+}
+.pf-button.subtle,
+.portal-button.subtle {
+	border-color: var(--pf-line);
+	color: var(--pf-muted);
+	font-weight: 600;
+}
+.pf-button.danger {
+	background: var(--sl-color-red);
+	border-color: var(--sl-color-red);
+	color: #fff;
+}
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+/* Starlight spaces out neighbouring elements in articles (good for prose). Inside the
+   portal's own rows and fields that extra top margin knocks things out of line. */
+.pf :is(.pf-field, .pf-actions, .pf-confirm, .hud-stat-head, .trait-row-main, .trait-row-controls, .system-card-head, .pf-section-head, .claim-picked li) > *,
+.portal :is(.player, .player > div) > * {
+	margin-top: 0;
+}
+
+/* ── Home (OrgsHome.tsx) ── */
+.og-home {
+	display: flex;
+	flex-direction: column;
+}
+.og-home > * + * {
+	margin-top: 0;
+}
+.og-hero {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1.25rem;
+	text-align: center;
+	padding-block: 0.5rem 1rem;
+}
+.og-hero > * {
+	margin: 0;
+}
+.og-lead {
+	max-width: 40rem;
+	font-size: var(--sl-text-lg);
+	line-height: 1.6;
+	color: var(--pf-muted);
+}
+.og-welcome {
+	font-size: var(--sl-text-h3);
+}
+/* Same look as KeyFacts.astro on the wiki pages. */
+.og-facts {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+	gap: 0.75rem;
+	width: 100%;
+	text-align: start;
+}
+.og-facts > div {
+	margin: 0;
+	padding: 0.85rem 1rem;
+	border: 1px solid var(--pf-line);
+	border-left: 3px solid var(--pf-accent);
+	border-radius: 0.75rem;
+	background: var(--pf-panel);
+}
+.og-facts dt {
+	font-size: var(--sl-text-xs);
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--pf-faint);
+}
+.og-facts dd {
+	margin: 0.2rem 0 0;
+	font-size: var(--sl-text-h4);
+	font-weight: 600;
+	color: var(--pf-text);
+}
+.og-heading {
+	margin: 2.5rem 0 1rem;
+	padding-bottom: 0.4rem;
+	border-bottom: 1px solid var(--pf-line);
+	font-size: var(--sl-text-h4);
+}
+
+/* Submission tiles, like HubTile.astro. */
+.og-tiles {
+	display: grid;
+	gap: 1rem;
+}
+@media (min-width: 50rem) {
+	.og-tiles {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+@media (min-width: 72rem) {
+	.og-tiles {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+}
+.og-tile {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.6rem;
+	margin: 0;
+	padding: 1.4rem;
+	border: 1px solid var(--pf-line);
+	border-radius: var(--pf-radius);
+	background: var(--pf-panel);
+	transition:
+		border-color 0.2s ease,
+		transform 0.2s ease,
+		box-shadow 0.2s ease;
+}
+.og-tile > * {
+	margin: 0;
+}
+.og-tile.linked:hover,
+.og-tile.linked:focus-within,
+.og-tile:has(.og-chips a):hover {
+	border-color: var(--pf-accent);
+	transform: translateY(-2px);
+	box-shadow: 0 0.75rem 2rem -1rem var(--pf-accent);
+}
+.og-tile.dim {
+	opacity: 0.65;
+}
+.og-icon {
+	color: var(--pf-accent);
+}
+.og-tile h3 {
+	font-size: var(--sl-text-h4);
+	line-height: 1.2;
+}
+.og-tile h3 a {
+	color: var(--pf-text);
+	text-decoration: none;
+}
+/* The title's link covers the whole tile. */
+.og-tile h3 a::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+}
+.og-tile p {
+	color: var(--pf-muted);
+	line-height: 1.6;
+}
+.og-badge {
+	padding: 0.1rem 0.6rem;
+	border: 1px solid var(--pf-line);
+	border-radius: 999px;
+	font-size: var(--sl-text-xs);
+	color: var(--pf-muted);
+}
+.og-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+	padding: 0;
+	list-style: none;
+}
+.og-chips li {
+	margin: 0;
+}
+.og-chips a {
+	display: inline-block;
+	padding: 0.2rem 0.7rem;
+	border: 1px solid var(--pf-line);
+	border-radius: 999px;
+	font-size: var(--sl-text-sm);
+	color: var(--pf-text);
+	text-decoration: none;
+}
+.og-chips a:hover {
+	border-color: var(--pf-accent);
+	background: var(--pf-glow);
+}
+
+/* Needs your attention */
+.og-todos {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.og-todos li {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	margin: 0;
+	padding: 0.7rem 0.7rem 0.7rem 1rem;
+	border: 1px solid var(--pf-line);
+	border-left: 3px solid var(--tone, var(--pf-line));
+	border-radius: 0.75rem;
+	background: var(--pf-panel);
+}
+.og-todos .pf-button {
+	flex: none;
+	padding: 0.35rem 0.9rem;
+}
+
+/* My Stuff */
+.og-stuff {
+	display: grid;
+	gap: 1rem;
+}
+@media (min-width: 50rem) {
+	.og-stuff {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+.og-stuff .portal-card {
+	margin: 0;
+}
+.og-stuff-head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	margin-bottom: 0.5rem;
+}
+.og-stuff-head h3 {
+	margin: 0;
+	font-size: var(--sl-text-lg);
+}
+.og-stuff-head a {
+	font-size: var(--sl-text-sm);
+}
+.og-rows {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.og-rows li {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 0.25rem 1rem;
+	margin: 0;
+	padding: 0.6rem 0;
+	border-bottom: 1px solid var(--pf-line);
+}
+.og-rows li:last-child {
+	border-bottom: 0;
+}
+.og-rows a {
+	font-weight: 600;
+	color: var(--pf-text);
+	text-decoration: none;
+}
+.og-rows a:hover {
+	color: var(--pf-accent);
+}
+.og-status {
+	font-size: var(--sl-text-sm);
+	color: var(--tone, var(--pf-muted));
+}
+.og-home .tone-good,
+.me .tone-good,
+.eqr .tone-good { --tone: var(--sl-color-green-high); }
+.og-home .tone-info,
+.me .tone-info,
+.eqr .tone-info { --tone: var(--sl-color-blue-high); }
+.og-home .tone-warn,
+.me .tone-warn,
+.eqr .tone-warn { --tone: var(--sl-color-orange-high); }
+.og-home .tone-bad,
+.me .tone-bad,
+.eqr .tone-bad { --tone: var(--sl-color-red-high); }
+.og-home .tone-muted { --tone: var(--pf-faint); }
+@media (prefers-reduced-motion: reduce) {
+	.og-tile {
+		transition: none;
+	}
+	.og-tile:hover {
+		transform: none;
+	}
+}
+
+.pf-empty {
+	color: var(--pf-faint);
+	font-style: italic;
+}
+
+/* ── Forms and section tabs (from the Divine Database portal.css) ── */
+.pf {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	padding-bottom: 5rem;
+}
+.pf-status {
+	border-radius: var(--pf-radius);
+	padding: 0.85rem 1.1rem;
+	border: 1px solid var(--pf-line-strong);
+	border-left: 4px solid var(--pf-accent);
+	background: var(--pf-panel);
+}
+.pf-status strong {
+	color: var(--pf-text);
+}
+.pf-status.status-needs_correction {
+	border-left-color: var(--sl-color-orange);
+}
+.pf-status.status-denied {
+	border-left-color: var(--sl-color-red);
+}
+
+/* Segmented section tabs */
+.pf-nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem;
+	position: sticky;
+	top: calc(var(--sl-nav-height, 4rem) + 0.5rem);
+	z-index: 5;
+	padding: 0.3rem;
+	border-radius: 0.7rem;
+	background: color-mix(in srgb, var(--pf-bg) 92%, transparent);
+	backdrop-filter: blur(8px);
+	border: 1px solid var(--pf-line);
+	width: fit-content;
+	max-width: 100%;
+}
+.pf-nav a {
+	font-size: var(--sl-text-sm);
+	font-weight: 600;
+	padding: 0.5rem 0.85rem;
+	border-radius: 0.5rem;
+	text-decoration: none;
+	color: var(--pf-muted);
+	transition:
+		background 0.2s,
+		color 0.2s;
+}
+.pf-nav a:hover {
+	color: var(--pf-text);
+}
+.pf-nav a.active {
+	background: var(--pf-accent);
+	color: var(--pf-ink);
+}
+
+.pf-section {
+	scroll-margin-top: 8rem;
+}
+.pf-section-head {
+	display: flex;
+	align-items: center;
+	gap: 0.85rem;
+	flex-wrap: wrap;
+	padding-bottom: 0.9rem;
+	margin-bottom: 0.25rem;
+	border-bottom: 1px solid var(--pf-line);
+}
+.pf-section-head h2 {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	margin: 0;
+	font-size: clamp(1.1rem, 2.2vw, 1.45rem);
+	font-weight: 800;
+	flex: 1;
+}
+.pf-intro {
+	color: var(--pf-muted);
+	margin: 0.75rem 0 0;
+	font-size: var(--sl-text-sm);
+}
+.pf-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+	gap: 1.1rem 1.5rem;
+	margin-top: 1.1rem;
+}
+.pf-grid > *,
+.sl-markdown-content .pf-grid > * {
+	margin-top: 0;
+}
+.pf-wide {
+	grid-column: 1 / -1;
+}
+.pf-field {
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+	min-width: 0;
+	margin: 0;
+}
+.pf-label,
+.hud-stat-label,
+.hud-tile-label {
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--pf-muted);
+}
+.pf-required {
+	color: var(--pf-accent);
+}
+.pf-field input,
+.pf-field select,
+.pf-field textarea,
+.trait-search input,
+.trait-proof,
+.perk-stat-custom {
+	width: 100%;
+	font: inherit;
+		font-size: var(--sl-text-sm);
+	color: var(--pf-text);
+	background: var(--pf-field);
+	border: 1px solid var(--pf-line);
+	border-radius: 0.55rem;
+	padding: 0.6rem 0.75rem;
+	transition:
+		border-color 0.2s,
+		box-shadow 0.2s;
+}
+.pf-field textarea {
+	resize: vertical;
+	line-height: 1.55;
+}
+.pf-field input:focus-visible,
+.pf-field select:focus-visible,
+.pf-field textarea:focus-visible,
+.trait-search input:focus-visible,
+.trait-proof:focus-visible,
+.perk-stat-custom:focus-visible,
+.hud-stat-select:focus-visible {
+	outline: none;
+	border-color: var(--pf-accent);
+	box-shadow: 0 0 0 3px var(--pf-glow);
+}
+.pf-help {
+	font-size: var(--sl-text-xs);
+	color: var(--pf-faint);
+	margin: 0;
+}
+.pf-checks {
+	border: 0;
+	padding: 0;
+}
+.pf-check {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	font-size: var(--sl-text-sm);
+	margin-inline-end: 1rem;
+	color: var(--pf-text);
+}
+.pf-check input {
+	accent-color: var(--pf-accent);
+}
+.pf .pf-subhead {
+	font-size: 0.8rem;
+	font-weight: 800;
+	margin: 0 0 0.75rem;
+}
+
+/* ── Group directory and group pages (from the Divine Database families.css, fm- → gp-) ── */
+.gp {
+	gap: 1rem;
+}
+.gp p {
+	margin-top: 0;
+}
+
+/* ── Chips and tags ── */
+.gp-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+	margin: 0;
+}
+.gp-chip,
+.gp-tag {
+	font-family: var(--pf-mono);
+	font-size: 0.68rem;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	padding: 0.2rem 0.55rem;
+	border-radius: 0.4rem;
+	border: 1px solid currentColor;
+	background: color-mix(in srgb, currentColor 12%, transparent);
+	color: var(--pf-muted);
+	white-space: nowrap;
+}
+.gp-chip.special {
+	color: var(--pf-accent);
+}
+.gp-chip.good {
+	color: var(--sl-color-green-high);
+}
+.gp-chip.warn {
+	color: var(--sl-color-orange-high);
+}
+.gp-tag {
+	font-size: 0.6rem;
+	padding: 0.05rem 0.35rem;
+	color: var(--pf-accent);
+	vertical-align: middle;
+}
+
+/* ── Directory ── */
+.gp-top {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.75rem;
+}
+.gp-top .pf-nav {
+	position: static;
+}
+.gp-search {
+	flex: 1 1 12rem;
+}
+.gp-top-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin-inline-start: auto;
+}
+.gp-top-actions > *,
+.gp-toolbar > * {
+	margin-top: 0;
+}
+.gp-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr));
+	gap: 1rem;
+	margin-top: 0.5rem;
+}
+.gp-grid > * {
+	margin-top: 0;
+}
+.gp-card {
+	--grp: var(--pf-accent);
+	display: flex;
+	flex-direction: column;
+	border-radius: var(--pf-radius);
+	border: 1px solid color-mix(in srgb, var(--grp) 35%, var(--pf-line));
+	background: var(--pf-panel);
+	overflow: hidden;
+	box-shadow: 0 0 1.5rem color-mix(in srgb, var(--grp) 10%, transparent);
+	transition:
+		border-color 0.2s,
+		box-shadow 0.2s,
+		transform 0.2s;
+}
+.gp-card:hover,
+.gp-card:focus-within {
+	border-color: var(--grp);
+	box-shadow: 0 0 2rem color-mix(in srgb, var(--grp) 30%, transparent);
+	transform: translateY(-2px);
+}
+.gp-card-art {
+	display: grid;
+	place-items: center;
+	aspect-ratio: 16 / 6;
+	background:
+		radial-gradient(circle at 30% 20%, color-mix(in srgb, var(--grp) 55%, transparent), transparent 60%),
+		linear-gradient(135deg, color-mix(in srgb, var(--grp) 35%, #08090c), #08090c);
+	text-decoration: none;
+}
+.gp-card-art img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	margin: 0;
+}
+.gp-card-art span {
+		font-size: 2.6rem;
+	font-weight: 800;
+	color: color-mix(in srgb, var(--grp) 70%, white);
+	text-shadow: 0 0 1.5rem var(--grp);
+}
+.gp-card-body {
+	display: flex;
+	flex-direction: column;
+	gap: 0.55rem;
+	padding: 1rem 1.1rem 1.1rem;
+	flex: 1;
+}
+.gp-card-body > * {
+	margin: 0;
+}
+.gp-card-title {
+	font-size: var(--sl-text-xl);
+	font-weight: 800;
+	letter-spacing: 0.04em;
+	margin: 0;
+}
+.gp-card-title a {
+	color: var(--pf-text);
+	text-decoration: none;
+}
+/* The whole card is clickable through its title link. */
+.gp-card {
+	position: relative;
+}
+.gp-card-title a::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+}
+.gp-card-text {
+	color: var(--pf-text);
+	font-size: var(--sl-text-sm);
+	line-height: 1.6;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+.gp-card-meta {
+	margin-top: auto;
+	font-size: var(--sl-text-xs);
+	color: var(--pf-faint);
+	letter-spacing: 0.04em;
+}
+
+/* ── Family page ── */
+/* The page's own title is the hero below, so Starlight's heading is hidden. */
+:root:has(.gp-page) .content-panel:has(h1#_top) {
+	display: none;
+}
+.gp-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	gap: 0.5rem;
+}
+.gp-hero {
+	position: relative;
+	display: grid;
+	align-items: end;
+	min-height: 12rem;
+	border-radius: var(--pf-radius);
+	overflow: hidden;
+	border: 1px solid var(--pf-line-strong);
+	background:
+		radial-gradient(circle at 15% 0%, color-mix(in srgb, var(--pf-accent) 45%, transparent), transparent 55%),
+		radial-gradient(circle at 90% 120%, color-mix(in srgb, var(--pf-accent) 30%, transparent), transparent 50%),
+		var(--pf-bg);
+	box-shadow: 0 0 3rem color-mix(in srgb, var(--pf-accent) 15%, transparent);
+}
+.gp-hero.has-banner {
+	min-height: clamp(14rem, 32vw, 22rem);
+}
+.gp-hero-img {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	margin: 0;
+}
+.gp-hero.has-banner::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(to top, rgb(5 6 9 / 0.92), rgb(5 6 9 / 0.35) 55%, transparent);
+}
+.gp-hero-text {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 0.6rem;
+	padding: clamp(1.1rem, 3vw, 2rem);
+}
+.gp-hero-text > * {
+	margin: 0;
+}
+
+/* ── Orgs additions: directory counts, group page pieces (GroupDirectory.tsx, GroupPage.tsx) ── */
+.gp-count {
+	font-size: var(--sl-text-xs);
+	opacity: 0.7;
+}
+.gp-chip.muted {
+	color: var(--pf-faint);
+}
+.gp-chip.bad {
+	color: var(--sl-color-red-high);
+}
+.gp-card-art img.gp-card-logo {
+	width: auto;
+	height: 70%;
+	object-fit: contain;
+	filter: drop-shadow(0 0 1rem color-mix(in srgb, var(--grp) 60%, transparent));
+}
+.gp-back {
+	margin: 0;
+	font-size: var(--sl-text-sm);
+}
+.gp-back a {
+	color: var(--pf-muted);
+	text-decoration: none;
+}
+.gp-back a:hover {
+	color: var(--pf-accent);
+}
+.gp-note {
+	margin: 0.5rem 0 0;
+	color: var(--pf-muted);
+}
+.gp-hero-row {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+.gp-hero-row > * {
+	margin: 0;
+}
+.gp-logo {
+	flex: none;
+	display: grid;
+	place-items: center;
+	width: clamp(3.5rem, 10vw, 5.5rem);
+	aspect-ratio: 1;
+	border-radius: 1rem;
+	object-fit: cover;
+	font-size: clamp(1.6rem, 5vw, 2.6rem);
+	font-weight: 800;
+	color: #fff;
+	background: color-mix(in srgb, var(--pf-accent) 45%, #08090c);
+	border: 1px solid color-mix(in srgb, var(--pf-accent) 60%, transparent);
+	box-shadow: 0 0 1.5rem color-mix(in srgb, var(--pf-accent) 35%, transparent);
+}
+.gp-hero-name {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	min-width: 0;
+}
+.gp-hero-name > * {
+	margin: 0;
+}
+.gp-title {
+	font-size: clamp(1.8rem, 5vw, 3rem);
+	line-height: 1.05;
+	color: #fff;
+	text-shadow: 0 0 1.5rem color-mix(in srgb, var(--pf-accent) 60%, transparent);
+	overflow-wrap: anywhere;
+}
+:root[data-theme='light'] .gp-hero:not(.has-banner) .gp-title {
+	color: var(--pf-text);
+}
+.gp-page .og-facts {
+	margin: 0;
+}
+.gp-aside {
+	font-size: var(--sl-text-sm);
+	font-weight: 600;
+	color: var(--pf-muted);
+}
+.gp-about {
+	white-space: pre-line;
+	line-height: 1.7;
+	margin: 1rem 0 0;
+}
+.gp-meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem 1.5rem;
+	margin: 1rem 0 0;
+	font-size: var(--sl-text-sm);
+	color: var(--pf-muted);
+}
+.gp-rank {
+	margin-top: 1.1rem;
+}
+.gp-rank-title {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin: 0 0 0.6rem;
+	font-size: var(--sl-text-sm);
+	font-family: inherit;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--pf-muted);
+}
+.gp-members {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+	gap: 0.6rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.gp-members li {
+	display: flex;
+	align-items: center;
+	gap: 0.7rem;
+	margin: 0;
+	padding: 0.55rem 0.7rem;
+	border: 1px solid var(--pf-line);
+	border-radius: 0.75rem;
+	background: var(--pf-bg);
+}
+.gp-avatar {
+	flex: none;
+	display: grid;
+	place-items: center;
+	width: 2.4rem;
+	height: 2.4rem;
+	margin: 0;
+	border-radius: 50%;
+	object-fit: cover;
+	font-weight: 800;
+	color: var(--pf-ink);
+	background: var(--pf-accent);
+}
+.gp-member-text {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	font-size: var(--sl-text-sm);
+}
+.gp-member-text strong {
+	color: var(--pf-text);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.gp-member-text span,
+.gp-list-sub {
+	font-size: var(--sl-text-xs);
+	color: var(--pf-faint);
+}
+.gp-list,
+.gp-shops {
+	margin: 0.75rem 0 0;
+	padding: 0;
+	list-style: none;
+}
+.gp-list li,
+.gp-shops li {
+	display: flex;
+	align-items: center;
+	gap: 0.85rem;
+	margin: 0;
+	padding: 0.65rem 0;
+	border-bottom: 1px solid var(--pf-line);
+}
+.gp-list li:last-child,
+.gp-shops li:last-child {
+	border-bottom: 0;
+}
+.gp-list-main {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	min-width: 0;
+	font-size: var(--sl-text-sm);
+}
+.gp-list-main a {
+	color: var(--pf-text);
+}
+.gp-points,
+.gp-amount {
+	flex: none;
+	min-width: 3rem;
+	font-family: var(--pf-mono);
+	font-size: var(--sl-text-sm);
+	font-weight: 700;
+	color: var(--pf-accent);
+}
+.gp-amount {
+	min-width: 5.5rem;
+}
+.gp-amount.in {
+	color: var(--sl-color-green-high);
+}
+.gp-amount.out {
+	color: var(--sl-color-red-high);
+}
+.gp-shops li {
+	justify-content: space-between;
+}
+/* Starlight indents <dd> inside articles. */
+.og-facts dd {
+	padding-inline-start: 0;
+	margin-inline-start: 0;
+}
+@media (max-width: 40rem) {
+	.gp-card-art {
+		aspect-ratio: 16 / 4;
+	}
+}
