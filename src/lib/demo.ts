@@ -1,5 +1,5 @@
 // Sample groups for checking layouts on the dev server (?demo). Never used on the live site.
-import type { Group, GroupCard, Mine, Tier } from './orgs.ts';
+import type { AdminQueue, Group, GroupCard, Mine, RankedAgency, Tier } from './orgs.ts';
 
 const day = (n: number) => new Date(Date.now() - n * 86400000).toISOString();
 
@@ -92,4 +92,19 @@ export const DEMO_MINE: Mine = {
 		{ id: 'm9', status: 'requested', character: 'Ren (Alt)', character_id: 'c8', group: 'Kurogane Industries', slug: 'kurogane-industries', kind: 'corporation', logo: null, rank: 'Employee', leader: false },
 	],
 	requested: [{ id: 'g9', name: 'Night Owls', slug: 'night-owls', kind: 'organization', status: 'needs_correction', review_note: 'Please add a short about section.' }],
+};
+
+export const DEMO_RANKING: RankedAgency[] = [
+	{ position: 1, id: '1', slug: 'bright-star-agency', name: 'Bright Star Agency', tagline: 'Always there when the city calls.', logo: null, colour: '#f2b134', points: 37, pinned: false, pin_note: null, members: 6, duties: 9 },
+	{ position: 2, id: '2', slug: 'aegis', name: 'Aegis', tagline: 'Shield of the eastern ward.', logo: null, colour: '#3b82f6', points: 12, pinned: true, pin_note: 'Founding agency', members: 3, duties: 4 },
+	{ position: 3, id: '5', slug: 'zenith', name: 'Zenith Heroes', tagline: '', logo: null, colour: '#a855f7', points: 15, pinned: false, pin_note: null, members: 2, duties: 5 },
+];
+
+export const DEMO_QUEUE: AdminQueue = {
+	groups: [
+		{ id: 'g9', slug: 'night-owls', kind: 'organization', name: 'Night Owls', tagline: 'Information brokers of the lower city.', about: 'A loose network of informants who sell secrets to whoever pays.\n\nRun out of a jazz bar.', logo_url: '', banner_url: '', headquarters: 'Lower City', submitted_at: day(1), requester: 'Rae', leader: 'Yuki Tanaka' },
+	],
+	duties: [
+		{ id: 'd9', group: 'Bright Star Agency', slug: 'bright-star-agency', character: 'Ren', player: 'Tamaki', tier: 'Rescue', points: 3, summary: 'Pulled a kid out of the river', details: 'During the flood scene.', link: 'https://discord.com/channels/1/2/9', at: day(0) },
+	],
 };

@@ -6,6 +6,7 @@ import {
 	askToJoin,
 	deleteGroup,
 	deleteRank,
+	groupsHref,
 	logDuty,
 	messageOf,
 	mineHref,
@@ -304,6 +305,15 @@ export function ManagePanel({ g, reload }: { g: Group; reload: () => Promise<voi
 					<a class="pf-button" href={newGroupHref(g.slug)}>
 						Edit page
 					</a>
+				)}
+				{g.me.admin && (
+					<button type="button" class="pf-button danger" disabled={busy === 'delete'}
+						onClick={async () =>
+							(await run('delete', () => deleteGroup(g.id), `Delete ${g.name} for good? Its wallet must be empty and it can't own a shop.`)) &&
+							(location.href = groupsHref())
+						}>
+						Delete group
+					</button>
 				)}
 				{g.status !== 'approved' && g.is_requester && (
 					<button type="button" class="pf-button subtle" disabled={busy === 'delete'}

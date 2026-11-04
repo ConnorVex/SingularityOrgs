@@ -241,6 +241,76 @@ export const logDuty = (group: string, character: string, tier: string, summary:
 	act<string>('orgs_log_duty', { p_group: group, p_character: character, p_tier: tier, p_summary: summary, p_details: details, p_link: link });
 export const withdrawDuty = (duty: string) => act<void>('orgs_withdraw_duty', { p_duty: duty });
 
+export interface RankedAgency {
+	position: number;
+	id: string;
+	slug: string;
+	name: string;
+	tagline: string;
+	logo: string | null;
+	colour: string;
+	points: number;
+	pinned: boolean;
+	pin_note: string | null;
+	members: number;
+	duties: number;
+}
+
+export interface AdminQueue {
+	groups: {
+		id: string;
+		slug: string;
+		kind: Kind;
+		name: string;
+		tagline: string;
+		about: string;
+		logo_url: string;
+		banner_url: string;
+		headquarters: string;
+		submitted_at: string;
+		requester: string | null;
+		leader: string | null;
+	}[];
+	duties: {
+		id: string;
+		group: string;
+		slug: string;
+		character: string;
+		player: string | null;
+		tier: string;
+		points: number;
+		summary: string;
+		details: string;
+		link: string;
+		at: string;
+	}[];
+}
+
+export async function loadRanking(): Promise<RankedAgency[]> {
+	if (import.meta.env.DEV && demoMode()) return (await import('./demo.ts')).DEMO_RANKING;
+	return call<RankedAgency[]>('orgs_ranking');
+}
+
+export async function loadAdminQueue(): Promise<AdminQueue> {
+	if (import.meta.env.DEV && demoMode()) return (await import('./demo.ts')).DEMO_QUEUE;
+	return call<AdminQueue>('orgs_admin_queue');
+}
+
+export const reviewGroup = (group: string, outcome: 'approved' | 'needs_correction' | 'denied', note: string) =>
+	act<void>('orgs_review', { p_group: group, p_outcome: outcome, p_note: note });
+export const reviewDuty = (duty: string, approve: boolean, note: string) => act<void>('orgs_review_duty', { p_duty: duty, p_approve: approve, p_note: note });
+export const awardPoints = (group: string, points: number, reason: string) => act<void>('orgs_award', { p_group: group, p_points: points, p_reason: reason });
+export const pinAgency = (group: string, position: number | null, note: string) => act<void>('orgs_pin', { p_group: group, p_position: position, p_note: note });
+export const saveTier = (t: Partial<Tier> & { name: string; points: number }) =>
+	act<string>('orgs_save_tier', {
+		p_tier: t.id ?? null,
+		p_name: t.name,
+		p_points: t.points,
+		p_description: t.description ?? '',
+		p_sort: t.sort ?? 0,
+		p_retired: t.retired ?? false,
+	});
+
 export const money = (n: number, symbol = '¢') => `${symbol}${n.toLocaleString()}`;
 export const messageOf = (e: unknown) => (e && typeof e === 'object' && 'message' in e ? String(e.message) : String(e));
 export const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;

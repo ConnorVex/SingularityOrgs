@@ -1,10 +1,11 @@
 ---
-// Placeholder until this page is built.
+// Admin review: group requests, hero duties, ranking points and pins, and duty types.
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import OrgsNav from '../../components/OrgsNav.astro';
+import AdminPage from '../../components/AdminPage.tsx';
 ---
 
 <StarlightPage frontmatter={{ title: 'Review', template: 'splash', tableOfContents: false }}>
 	<OrgsNav current="review" />
-	<p class="portal-status">Coming soon.</p>
+	<AdminPage client:only="preact" />
 </StarlightPage>
