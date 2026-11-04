@@ -98,6 +98,9 @@ export const DEMO_RANKING: RankedAgency[] = [
 	{ position: 1, id: '1', slug: 'bright-star-agency', name: 'Bright Star Agency', tagline: 'Always there when the city calls.', logo: null, colour: '#f2b134', points: 37, pinned: false, pin_note: null, members: 6, duties: 9 },
 	{ position: 2, id: '2', slug: 'aegis', name: 'Aegis', tagline: 'Shield of the eastern ward.', logo: null, colour: '#3b82f6', points: 12, pinned: true, pin_note: 'Founding agency', members: 3, duties: 4 },
 	{ position: 3, id: '5', slug: 'zenith', name: 'Zenith Heroes', tagline: '', logo: null, colour: '#a855f7', points: 15, pinned: false, pin_note: null, members: 2, duties: 5 },
+	{ position: 4, id: '6', slug: 'tidebreakers', name: 'Tidebreakers Hero Office', tagline: 'Coastal rescue.', logo: null, colour: '#06b6d4', points: 9, pinned: false, pin_note: null, members: 5, duties: 4 },
+	{ position: 5, id: '7', slug: 'ember', name: 'Ember', tagline: '', logo: null, colour: '#f97316', points: 1, pinned: false, pin_note: null, members: 1, duties: 1 },
+	{ position: 6, id: '8', slug: 'quiet-hour', name: 'Quiet Hour', tagline: '', logo: null, colour: '#64748b', points: 0, pinned: false, pin_note: null, members: 2, duties: 0 },
 ];
 
 export const DEMO_QUEUE: AdminQueue = {

@@ -131,6 +131,8 @@ const query = (params: Record<string, string>) => {
 export const groupsHref = (kind?: Kind) => `${root}groups/${query(kind ? { type: kind } : {})}`;
 export const groupHref = (slug: string) => `${root}groups/view/${query({ g: slug })}`;
 export const newGroupHref = (edit?: string) => `${root}groups/new/${query(edit ? { edit } : {})}`;
+export const requestHref = (kind: Kind) => `${root}groups/new/${query({ type: kind })}`;
+export const rankingHref = () => `${root}ranking/${query({})}`;
 export const mineHref = () => `${root}mine/${query({})}`;
 export const shopHref = (id: string) => `${ECONOMY}#/shops/${id}`;
 

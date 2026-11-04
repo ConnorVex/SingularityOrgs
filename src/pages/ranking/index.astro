@@ -1,10 +1,11 @@
 ---
-// Placeholder until this page is built.
+// Hero Agency Ranking: agencies by points from the last 30 days.
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import OrgsNav from '../../components/OrgsNav.astro';
+import HeroRanking from '../../components/HeroRanking.tsx';
 ---
 
 <StarlightPage frontmatter={{ title: 'Hero Agency Ranking', template: 'splash', tableOfContents: false }}>
 	<OrgsNav current="ranking" />
-	<p class="portal-status">Coming soon.</p>
+	<HeroRanking client:only="preact" />
 </StarlightPage>

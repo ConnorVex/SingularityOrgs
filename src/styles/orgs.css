@@ -1382,3 +1382,174 @@
 		position: static;
 	}
 }
+
+/* ── Hero Agency Ranking (HeroRanking.tsx) ── */
+.hr {
+	--grp: var(--pf-accent);
+}
+.hr-top {
+	display: grid;
+	gap: 0.9rem;
+	margin: 1.25rem 0;
+}
+.hr-podium {
+	--grp-soft: color-mix(in srgb, var(--grp) 14%, var(--pf-card, var(--sl-color-gray-6)));
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.35rem;
+	padding: 1.1rem 1rem 1.2rem;
+	text-align: center;
+	text-decoration: none;
+	color: var(--pf-text);
+	border: 1px solid color-mix(in srgb, var(--grp) 55%, transparent);
+	border-top: 4px solid var(--grp);
+	border-radius: 1rem;
+	background: linear-gradient(180deg, var(--grp-soft), transparent 85%);
+	transition: transform 0.15s ease;
+}
+.hr-podium:hover {
+	transform: translateY(-2px);
+}
+.hr-podium > * {
+	margin: 0;
+}
+.hr-place {
+	font-family: var(--pf-mono);
+	font-size: var(--sl-text-xs);
+	font-weight: 800;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--grp);
+}
+.hr-p1 .hr-place::before {
+	content: '★ ';
+}
+.hr-logo {
+	flex: none;
+	display: grid;
+	place-items: center;
+	width: 3.2rem;
+	height: 3.2rem;
+	margin: 0;
+	border-radius: 50%;
+	object-fit: cover;
+	font-weight: 800;
+	font-size: 1.2rem;
+	color: #111;
+	background: var(--grp);
+}
+.hr-p1 .hr-logo {
+	width: 4rem;
+	height: 4rem;
+	font-size: 1.5rem;
+	box-shadow: 0 0 0 4px color-mix(in srgb, var(--grp) 30%, transparent);
+}
+.hr-name {
+	font-size: var(--sl-text-lg);
+	line-height: 1.2;
+	overflow-wrap: anywhere;
+}
+.hr-tagline {
+	font-size: var(--sl-text-sm);
+	color: var(--pf-muted);
+}
+.hr-points {
+	font-size: var(--sl-text-2xl);
+	font-weight: 800;
+	line-height: 1.1;
+	white-space: nowrap;
+}
+.hr-points small {
+	font-size: var(--sl-text-xs);
+	font-weight: 600;
+	color: var(--pf-faint);
+}
+.hr-stats {
+	font-size: var(--sl-text-xs);
+	color: var(--pf-muted);
+}
+@media (min-width: 50rem) {
+	.hr-top-3 {
+		grid-template-columns: 1fr 1.15fr 1fr;
+		align-items: end;
+	}
+	.hr-top-2 {
+		grid-template-columns: 1fr 1fr;
+	}
+	.hr-top-3 .hr-p2 {
+		order: -1;
+	}
+	.hr-top-3 .hr-p1 {
+		padding-block: 1.6rem 1.8rem;
+	}
+}
+.hr-list,
+.hr-tiers {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.hr-list li,
+.hr-tiers li {
+	display: flex;
+	align-items: center;
+	gap: 0.8rem;
+	margin: 0;
+	padding: 0.7rem 0;
+	border-bottom: 1px solid var(--pf-line);
+}
+.hr-list li:last-child,
+.hr-tiers li:last-child {
+	border-bottom: 0;
+}
+.hr-list .hr-logo {
+	width: 2.4rem;
+	height: 2.4rem;
+	font-size: 1rem;
+}
+.hr-list .hr-points {
+	font-size: var(--sl-text-lg);
+}
+.hr-num {
+	flex: 0 0 2.2rem;
+	font-family: var(--pf-mono);
+	font-weight: 800;
+	color: var(--pf-muted);
+}
+.hr-main {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.2rem;
+	min-width: 0;
+}
+.hr-main a {
+	font-weight: 700;
+	overflow-wrap: anywhere;
+}
+.hr-how {
+	margin-top: 1.25rem;
+}
+.hr-tier-points {
+	flex: 0 0 2.6rem;
+	display: grid;
+	place-items: center;
+	height: 2.6rem;
+	border-radius: 0.6rem;
+	font-weight: 800;
+	color: var(--pf-ink);
+	background: var(--pf-accent);
+}
+.hr-top + .portal-card {
+	margin-top: 0;
+}
+.hr-list li:first-child,
+.hr-tiers li:first-child {
+	padding-top: 0;
+}
+.hr-list li:last-child,
+.hr-tiers li:last-child {
+	padding-bottom: 0;
+}
